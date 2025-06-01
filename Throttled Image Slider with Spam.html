@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Throttled Image Slider</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 40px;
+    }
+    img {
+      width: 600px;
+      height: 400px;
+      border: 2px solid #333;
+      border-radius: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 20px 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #slide-number {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Throttled Image Slider</h2>
+  <img id="slider" src="https://picsum.photos/600/400?random=1" alt="Random Image">
+  <div>
+    <button id="prev">Previous</button>
+    <button id="next">Next</button>
+  </div>
+  <p id="slide-number">Slide: 1</p>
+
+  <script>
+    const img = document.getElementById('slider');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
+    const slideText = document.getElementById('slide-number');
+
+    let slideIndex = 1;
+    let lastValidClick = 0;
+    let clickCount = 0;
+
+    nextBtn.addEventListener('click', () => handleClick('next'));
+    prevBtn.addEventListener('click', () => handleClick('prev'));
+
+    function handleClick(direction) {
+      const now = Date.now();
+
+      // Count total clicks in 1 second
+      if (now - lastValidClick < 1000) {
+        clickCount++;
+        if (clickCount >= 3) {
+          alert("Chill chill, loading it!!");
+          return;
+        }
+      } else {
+        clickCount = 1; 
+      }
+
+      if (now - lastValidClick < 1000) return;
+
+      if (direction === 'next') {
+        slideIndex++;
+      } else if (direction === 'prev') {
+        if (slideIndex === 1) return; 
+        slideIndex--;
+      }
+
+      lastValidClick = now;
+      img.src = `https://picsum.photos/600/400?random=${Math.random()}`;
+      slideText.textContent = `Slide: ${slideIndex}`;
+    }
+  </script>
+
+</body>
+</html>
